@@ -2,6 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Expense {
+  [x: string]: any;
   id: number;
   buildingName: string;
   address: string;

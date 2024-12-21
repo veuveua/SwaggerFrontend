@@ -19,7 +19,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses }) => {
     );
   };
 
-  // Renkleri seçmek için fonksiyon
+  // Renkleri seçmek için 
   const getBackgroundColor = (monthlyFee: number): string => {
     if (monthlyFee < 1000) {
       return 'green';
@@ -28,7 +28,7 @@ const ExpenseList: React.FC<ExpenseListProps> = ({ expenses }) => {
     } else if (monthlyFee > 5000) {
       return 'red';
     }
-    return 'gray'; // Fallback color
+    return 'gray'; 
   };
 
   return (

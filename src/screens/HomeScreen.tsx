@@ -1,12 +1,12 @@
+
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
+import { TextInput, Button, StyleSheet, FlatList, View, Text } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { setExpenses, addExpense } from '../redux/expenseSlice';
-import ExpenseList from '../components/ExpenseList';
-import { Expense } from '../types/Expense';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import ListItem from '../components/ListItem'; 
 import axiosInstance from '../axiosConfig';
+import { Expense } from '../types/Expense';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -29,7 +29,6 @@ const HomeScreen = () => {
     profit: 0,
     description: ''
   });
-  const [locked, setLocked] = useState(true);
 
   useEffect(() => {
     axiosInstance.get('/maintenances').then(response => {
@@ -63,44 +62,40 @@ const HomeScreen = () => {
     });
   };
 
-  const toggleLocked = () => {
-    setLocked(!locked);
-  };
-
-  const handleLockToggle = (id: number) => {
-    console.log(`Toggled lock for expense with id: ${id}`);
-  };
-
-  const handleEdit = (id: number) => {
-    console.log(`Editing expense with id: ${id}`);
-  };
-
   return (
-    <ScrollView style={styles.container}>
-      <ExpenseList 
-        expenses={expenses}
-        onLockToggle={handleLockToggle} 
-        onEdit={handleEdit} 
-      />
+    <View style={styles.container}>
+      {/* Tablo Başlıkları */}
+      <View style={styles.header}>
+        <Text style={styles.cell}>Bina Adı</Text>
+        <Text style={styles.cell}>Adres</Text>
+        <Text style={styles.cell}>Aylık Ücret</Text>
+        <Text style={styles.cell}>Yıllık Ücret</Text>
+        <Text style={styles.cell}>Ödenen Ücret</Text>
+        <Text style={styles.cell}>Kalan Ücret</Text>
+        <Text style={styles.cell}>Gider</Text>
+      </View>
 
-      <Text>Lock Durumu: {locked ? 'Kilitli' : 'Açık'}</Text>
+      {/* FlatList  */}
+      <FlatList
+        data={expenses}
+        renderItem={({ item }) => <ListItem expense={item} />}
+        keyExtractor={(item) => item.id.toString()}
+      />
 
       <TextInput
         placeholder="Bina Adı"
         value={newExpense.buildingName}
         onChangeText={(text) => setNewExpense({ ...newExpense, buildingName: text })}
         style={styles.input}
-        editable={!locked}
       />
       <TextInput
         placeholder="Adres"
         value={newExpense.address}
         onChangeText={(text) => setNewExpense({ ...newExpense, address: text })}
         style={styles.input}
-        editable={!locked}
       />
       <Button title="Ekle" onPress={handleAddExpense} />
-    </ScrollView>
+    </View>
   );
 };
 
@@ -117,9 +112,21 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 8,
   },
-  lockIcon: {
-    marginBottom: 20,
-    alignSelf: 'center',
+  header: {
+    flexDirection: 'row',
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  cell: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    borderRightWidth: 1, // Hücreler arasına kenarlık
+    borderRightColor: '#ddd', // Hafif gri renk
+    paddingVertical: 5,
   },
 });
 
